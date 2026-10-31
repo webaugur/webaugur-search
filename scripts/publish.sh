@@ -11,10 +11,13 @@ if [[ "${1:-}" != "--no-build" ]]; then
 fi
 # Copy index JSON only. 'all' duplicates 'x' and is not in the manifest.
 nice -n 19 ionice -c3 rsync -a --delete --exclude=all/ --include='*/' --include='*.json' --exclude='*' "$SRC/" "$REPO_DIR/indexes/"
+# X catalog for webaugur.com/x/ and "More like…" (text + X links only, no media).
+CODE="${XPATRIATE_CODE:-$SITE}"
+PYTHONPATH="$CODE" nice -n 19 ionice -c3 python3 -m xpatriate.xcatalog "$SITE/www/x" "$REPO_DIR/x"
 big=$(find "$REPO_DIR/indexes" -type f -size +19M)
-[[ -z "$big" ]] || { echo "Files over jsDelivr 20MB limit:"; echo "$big"; exit 1; }
+[[ -z "$big" ]] || { echo "Files over 20MB:"; echo "$big"; exit 1; }
 cd "$REPO_DIR"
-git add -A indexes
+git add -A indexes x
 git diff --cached --quiet && { echo "No index changes."; exit 0; }
 git commit -q -m "Rebuild indexes $(date +%F)"
 base="v$(date +%Y.%m.%d)"; tag="$base"; n=1

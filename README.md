@@ -29,3 +29,11 @@ Limits either way are free with no billing: GitHub Pages 1 GB site / ~100 GB a m
     scripts/publish.sh --no-build # publish the indexes already built
 
 GitHub Pages picks up `main` within a minute or two; no change is needed on webaugur.com. The base URL lives in webaugur.com `www/search/search-config.js`.
+
+## x/ (X catalog)
+
+`x/` holds the text-only X catalog used by webaugur.com/x/ and "More like…":
+`dates.json`, `<date>/day.json`, `<date>/posts.json` (post meta + article HTML,
+self-hosted media removed in favour of the official X embed) and
+`dict/id/NN.json` (thread rows). Built by `python3 -m xpatriate.xcatalog`
+inside `scripts/publish.sh`. No images or videos are ever published here.
