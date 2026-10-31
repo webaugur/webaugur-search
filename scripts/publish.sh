@@ -11,6 +11,18 @@ if [[ "${1:-}" != "--no-build" ]]; then
 fi
 # Copy index JSON only. 'all' duplicates 'x' and is not in the manifest.
 nice -n 19 ionice -c3 rsync -a --delete --exclude=all/ --include='*/' --include='*.json' --exclude='*' "$SRC/" "$REPO_DIR/indexes/"
+# Tell the browser which indexes are one flat index.json, so it never
+# requests a missing index.json for sharded ones (a 404 per search).
+python3 - "$REPO_DIR/indexes" <<'PY'
+import json, sys
+from pathlib import Path
+root = Path(sys.argv[1]); p = root / "manifest.json"
+man = json.loads(p.read_text(encoding="utf-8"))
+for e in man.get("indexes", []):
+    d = root / (e.get("path") or e["name"] + "/")
+    e["flat"] = (d / "index.json").is_file()
+p.write_text(json.dumps(man, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+PY
 # X catalog for webaugur.com/x/ and "More like…" (text + X links only, no media).
 CODE="${XPATRIATE_CODE:-$SITE}"
 PYTHONPATH="$CODE" nice -n 19 ionice -c3 python3 -m xpatriate.xcatalog "$SITE/www/x" "$REPO_DIR/x"
