@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Rebuild webaugur.com search indexes with swish-whee, publish to GitHub, tag, purge jsDelivr.
+# Rebuild webaugur.com search indexes with swish-whee, commit, tag, push (GitHub Pages serves main).
 # Usage: scripts/publish.sh [--no-build]
 set -euo pipefail
 REPO_DIR="$(cd "$(dirname "$0")/.." && pwd)"
@@ -23,5 +23,4 @@ git tag "$tag"
 git push -q origin main "$tag"
 curl -fsS "https://purge.jsdelivr.net/gh/webaugur/webaugur-search@main/indexes/manifest.json" >/dev/null || true
 echo "Published $tag"
-echo "Bump SEARCH_BASE in webaugur.com www/search/search-config.js to:"
-echo "  https://cdn.jsdelivr.net/gh/webaugur/webaugur-search@$tag/indexes/"
+echo "Live in a minute or two at https://webaugur.github.io/webaugur-search/indexes/manifest.json"
