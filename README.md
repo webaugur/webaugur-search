@@ -14,7 +14,7 @@ Every publish is also a tagged commit (`v2026.10.31`, `v2026.11.02`, ...), so ol
 
 jsDelivr (`https://cdn.jsdelivr.net/gh/webaugur/webaugur-search@<tag>/indexes/...`) does **not** work reliably here:
 for GitHub repos over 50 MB it answers browser requests (which ask for brotli) with
-`403 Package size exceeded the configured limit of 50 MB`. The indexes are ~230 MB raw.
+`403 Package size exceeded the configured limit of 50 MB`. The indexes are ~200 MB raw.
 It would only work if the indexes were split across several repos under 50 MB each.
 
 Limits either way are free with no billing: GitHub Pages 1 GB site / ~100 GB a month soft bandwidth (throttles, never charges).
