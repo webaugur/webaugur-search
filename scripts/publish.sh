@@ -7,7 +7,7 @@ SITE="${XPATRIATE_DIR:-$HOME/Documents/Xpatriate}"
 SRC="$SITE/www/search/indexes"
 if [[ "${1:-}" != "--no-build" ]]; then
   # swish-whee writes slowly on purpose; stay gentle on the disk.
-  (cd "$SITE" && nice -n 19 ionice -c3 bin/swhee-index && nice -n 19 ionice -c3 bin/swhee-index-blog)
+  (cd "$SITE" && SWHEE_SRC="${SWHEE_SRC:-$HOME/Documents/swish-whee}" nice -n 19 ionice -c3 bin/swhee-index && { [[ ! -x bin/swhee-index-blog ]] || nice -n 19 ionice -c3 bin/swhee-index-blog; })
 fi
 # Copy index JSON only. 'all' duplicates 'x' and is not in the manifest.
 nice -n 19 ionice -c3 rsync -a --delete --exclude=all/ --include='*/' --include='*.json' --exclude='*' "$SRC/" "$REPO_DIR/indexes/"
